@@ -178,6 +178,12 @@ void convertDecToBase(char number[32], unsigned int base) {
         scanf("%u", &fractionalPrecision);
     }
 
+    if (integerPart == 0) {
+        printf("0");
+    } else {
+        convertDecToBase_integerPart(integerPart, base);
+    }
+
     printSuccess();
 
     convertDecToBase_integerPart(integerPart, base);
