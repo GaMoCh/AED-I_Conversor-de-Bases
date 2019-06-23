@@ -12,6 +12,16 @@ void printError() {
     printf("\nEntrada inválida");
 }
 
+double _pow(double base, int exponent) {
+    if (exponent > 0) {
+        return (base * pow(base, exponent - 1));
+    } else if (exponent < 0) {
+        return (1 / pow(base, -exponent));
+    } else {
+        return 1;
+    }
+}
+
 unsigned int convertCharValueToNumberValue(char charValue) {
     if (charValue >= '0' && charValue <= '9') {
         return (int)charValue - '0';
@@ -33,7 +43,7 @@ void convertBaseToDec(char number[32], unsigned int base) {
     for (int counter = digits - 1; counter >= 0; counter--) {
         if ((number[counter] == '0' || number[counter] == '1') || base > 2 ||
             number[counter] == '-' && counter == 0 || number[counter] == ',') {
-            if ((number[counter] >= '0' || number[counter] <= '7') || base > 8 ||
+            if ((number[counter] >= '0' && number[counter] <= '7') || base > 8 ||
                 number[counter] == '-' && counter == 0 || number[counter] == ',') {
                 if (number[counter] >= '0' && number[counter] <= '9' ||
                     number[counter] >= 'A' && number[counter] <= 'F' ||
@@ -113,7 +123,7 @@ void convertDecToBase_integerPart(unsigned long long number, unsigned int base) 
     convertDecToBase_printValue(remainder);
 }
 
-void convertDecToBase_fractionalPart(long double number, unsigned int base, unsigned int fractionalPrecision) {
+void convertDecToBase_fractionalPart(double number, unsigned int base, unsigned int fractionalPrecision) {
     int integerPart = 0;
 
     while (fractionalPrecision != 0) {
@@ -126,7 +136,7 @@ void convertDecToBase_fractionalPart(long double number, unsigned int base, unsi
 }
 
 void convertDecToBase(char number[32], unsigned int base) {
-    long double fractionalPart = 0.0;
+    double fractionalPart = 0.0;
     unsigned long long integerPart = 0;
     unsigned int digits = strlen(number);
     unsigned int commaPosition = strlen(number);
@@ -160,7 +170,7 @@ void convertDecToBase(char number[32], unsigned int base) {
 
     for (int counter = commaPosition - 1; counter >= isNegative; counter--) {
         unsigned int digit = convertCharValueToNumberValue(number[counter]);
-        integerPart += digit * pow(10, expoent);
+        integerPart += digit * _pow(10, expoent);
         expoent++;
     }
 
@@ -168,7 +178,7 @@ void convertDecToBase(char number[32], unsigned int base) {
         expoent = -1;
         for (int counter = commaPosition + 1; counter < digits; counter++) {
             unsigned int digit = convertCharValueToNumberValue(number[counter]);
-            fractionalPart += digit * pow(10, expoent);
+            fractionalPart += digit * _pow(10, expoent);
             expoent--;
         }
     }
@@ -178,15 +188,13 @@ void convertDecToBase(char number[32], unsigned int base) {
         scanf("%u", &fractionalPrecision);
     }
 
+    printSuccess();
+
     if (integerPart == 0) {
         printf("0");
     } else {
         convertDecToBase_integerPart(integerPart, base);
     }
-
-    printSuccess();
-
-    convertDecToBase_integerPart(integerPart, base);
 
     if (fractionalPart != 0) {
         printf(",");
